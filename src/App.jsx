@@ -58,7 +58,7 @@ function App() {
           }
         }
       })
-      // [25, -6, -25]
+
       gsap.to(modelRef.current.position, {
         x: forward ? 25 : 0,
         y: forward ? -6 : 0,
