@@ -2,21 +2,16 @@ import { Canvas } from "@react-three/fiber";
 import Model from "./Model";
 import { Environment, useProgress } from "@react-three/drei";
 import { forwardRef, useEffect } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 // Componente interno que monitorea el progreso de carga
-function SceneContent({ modelRef, onModelReady, onProgress }) {
-  const { progress, active } = useProgress()
-
-  useEffect(() => {
-    // Reportar progreso en tiempo real
-    if (onProgress) {
-      onProgress(progress)
-    }
-  }, [progress, onProgress])
+function SceneContent({ modelRef, onModelReady }) {
+  const { active } = useProgress()
 
   useEffect(() => {
     // Cuando active es false, significa que todos los assets terminaron de cargar
-    if (!active && progress === 100 && modelRef?.current && onModelReady) {
+    if (!active && modelRef?.current && onModelReady) {
       // Pequeño delay para asegurar que todo esté renderizado en el DOM
       const timer = setTimeout(() => {
         onModelReady(modelRef.current)
@@ -24,7 +19,17 @@ function SceneContent({ modelRef, onModelReady, onProgress }) {
       
       return () => clearTimeout(timer)
     }
-  }, [active, progress, modelRef, onModelReady])
+  }, [active, modelRef, onModelReady])
+
+  useGSAP(() => {
+    if (active) return
+    gsap.set('#canvas-container', { zIndex: 10 })
+    gsap.from(modelRef.current.position, {
+      z: -100,
+      duration: 2,
+      ease: "power2.out",
+    })
+  }, [active, modelRef])
 
   return (
     <>
@@ -34,7 +39,7 @@ function SceneContent({ modelRef, onModelReady, onProgress }) {
       />
 
       <group
-        position={[0, 0, -80]}
+        position={[0, 0, -60]}
         rotation={[0, -Math.PI / 2, 0]}
         scale={0.1}
         ref={modelRef}
@@ -45,9 +50,9 @@ function SceneContent({ modelRef, onModelReady, onProgress }) {
   )
 }
 
-const CanvasModel = forwardRef(({ onModelReady, onProgress }, ref) => {
+const CanvasModel = forwardRef(({ onModelReady, containerRef }, ref) => {
   return (
-    <div className='fixed w-full h-dvh -z-10 pointer-events-none' >
+    <div id="canvas-container" ref={containerRef} className='fixed w-full h-dvh pointer-events-none' >
       <Canvas
         dpr={[1, 2]}
         camera={{
@@ -61,7 +66,7 @@ const CanvasModel = forwardRef(({ onModelReady, onProgress }, ref) => {
           depth: true,
         }}
       >
-        <SceneContent modelRef={ref} onModelReady={onModelReady} onProgress={onProgress} />
+        <SceneContent modelRef={ref} onModelReady={onModelReady} />
       </Canvas>
     </div>
   )

@@ -1,29 +1,33 @@
 import { useGSAP } from '@gsap/react'
-import bgHero from '/bg-hero.webp'
 import gsap from 'gsap'
+import bgHero from '/bg-hero.webp'
 
-export default function Hero() {
 
+export default function Hero({ isReady }) {
   useGSAP(() => {
+    if (!isReady) return
     gsap.from('#title', {
       alpha: 0,
-      y: -50,
+      scale: 0.97,
       duration: 1.5,
-      ease: 'power3.out',
     })
-  })
+  }, [isReady])
 
   return (
-    <section className="relative w-full h-dvh overflow-hidden grid place-content-center">
-      <div className='absolute inset-0 -z-20'>
-        <img className='w-full h-full object-cover contrast-105 ' src={bgHero} alt="Background Hero" />
+    <>
+      <div className='fixed inset-0'>
+        <img className='w-full h-full object-cover contrast-105' src={bgHero} alt="Background Hero" />
       </div>
-      <div className='-z-20 absolute bottom-0 w-full h-2/3 bg-linear-to-t from-black to-transparent'></div>
-      <h1 id='title' className='text-2xl md:text-7xl text-zinc-950 tracking-[1.5rem] md:tracking-[3rem] lg:tracking-[5rem] font-principal flex flex-col items-center justify-center -mr-6'>
-        <span className='-z-20'>DEATH</span>
-        <span>STRANDING</span>
-      </h1>
-    </section>
+
+      <div className='fixed bottom-0 w-full h-2/3 bg-linear-to-t from-black to-transparent'></div>
+
+      <section className="fixed inset-0 w-full h-dvh grid place-content-center pointer-events-none">
+        <h1 id='title' className='mb-30 text-2xl md:text-7xl text-zinc-950 tracking-[1.5rem] md:tracking-[3rem] lg:tracking-[5rem] font-principal flex flex-col items-center justify-center -mr-6 relative'>
+          <span>DEATH</span>
+          <span>STRANDING</span>
+        </h1>
+      </section>
+    </>
   )
 
 }

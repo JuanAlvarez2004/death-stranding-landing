@@ -23,6 +23,7 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: black;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
