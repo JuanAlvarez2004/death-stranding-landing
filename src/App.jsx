@@ -45,7 +45,7 @@ function App() {
 
       // Animar rotación del modelo
       gsap.to(modelRef.current.rotation, {
-        y: modelRef.current.rotation.y + (forward ? Math.PI / 4 : -Math.PI / 4),
+        y: modelRef.current.rotation.y + (forward ? -Math.PI / 6 : Math.PI / 6),
         duration: 1.25,
         ease: "power1.inOut",
         onStart: () => {
@@ -57,6 +57,14 @@ function App() {
             }, timeOut);
           }
         }
+      })
+      // [25, -6, -25]
+      gsap.to(modelRef.current.position, {
+        x: forward ? 25 : 0,
+        y: forward ? -6 : 0,
+        z: forward ? -25 : -80,
+        duration: 1.25,
+        ease: "power1.inOut",
       })
     }
   }, [playTransitionSoundIn, playTransitionSoundOut])

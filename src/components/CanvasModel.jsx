@@ -25,8 +25,10 @@ function SceneContent({ modelRef, onModelReady }) {
     if (active) return
     gsap.set('#canvas-container', { zIndex: 10 })
     gsap.from(modelRef.current.position, {
-      z: -100,
-      duration: 2,
+      y: -7.5,
+      z: -8,
+      duration: 3,
+      delay: .3,
       ease: "power2.out",
     })
   }, [active, modelRef])
@@ -39,7 +41,7 @@ function SceneContent({ modelRef, onModelReady }) {
       />
 
       <group
-        position={[0, 0, -60]}
+        position={[0, 0, -80]} // [0, , -30] 
         rotation={[0, -Math.PI / 2, 0]}
         scale={0.1}
         ref={modelRef}
