@@ -44,6 +44,8 @@ export function useSectionTransition({ heroRef, mainRef, showMain, setShowMain, 
           observerRef.current.kill()
           observerRef.current = null
         }
+        // Asegurar que el scroll esté en el top después de la transición
+        window.scrollTo(0, 0)
       }
     })
 

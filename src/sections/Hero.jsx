@@ -1,6 +1,6 @@
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import bgHero from '/bg-hero.webp'
+import bgHero from '/images/bg-hero.webp'
 
 
 export default function Hero({ isReady }) {

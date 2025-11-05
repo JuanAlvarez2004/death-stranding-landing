@@ -4,6 +4,7 @@ import { Environment, useProgress } from "@react-three/drei";
 import { forwardRef, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import useMediaQuery from "../hooks/useMediaQuery";
 
 // Componente interno que monitorea el progreso de carga
 function SceneContent({ modelRef, onModelReady }) {
@@ -53,10 +54,12 @@ function SceneContent({ modelRef, onModelReady }) {
 }
 
 const CanvasModel = forwardRef(({ onModelReady, containerRef }, ref) => {
+  const isMobile = useMediaQuery()
+
   return (
     <div id="canvas-container" ref={containerRef} className='fixed w-full h-dvh pointer-events-none' >
       <Canvas
-        dpr={[1, 2]}
+        dpr={isMobile ? [0.5, 1.2] : [1, 2]}
         camera={{
           fov: 75,
         }}

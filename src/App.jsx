@@ -10,6 +10,7 @@ import { useAudio } from "./hooks/useAudio"
 import gsap from "gsap"
 import inSound from "/sounds/in-sound.m4a"
 import outSound from "/sounds/out-sound.m4a"
+import openMenuSound from '/sounds/open-menu.mp3'
 
 
 function App() {
@@ -24,6 +25,9 @@ function App() {
   // Hook para manejar el audio de transición
   const { play: playTransitionSoundIn, isMuted: isMutedIn, toggleMute: toggleMuteIn } = useAudio(inSound, 0.5)
   const { play: playTransitionSoundOut, toggleMute: toggleMuteOut } = useAudio(outSound, 0.5)
+  
+  // Hook para el audio de las cartas
+  const { play: playCardSound, toggleMute: toggleMuteCard } = useAudio(openMenuSound, 0.5)
 
   // Callback optimizado que se ejecuta cuando el modelo está listo
   const handleModelReady = useCallback((modelGroup) => {
@@ -43,11 +47,11 @@ function App() {
         playTransitionSoundOut()
       }
 
-      // Animar rotación del modelo
-      gsap.to(modelRef.current.rotation, {
-        y: modelRef.current.rotation.y + (forward ? -Math.PI / 6 : Math.PI / 6),
-        duration: 1.25,
-        ease: "power1.inOut",
+      const tl = gsap.timeline({ ease: "power1.inOut" })
+
+      tl.to(modelRef.current.rotation, {
+        y: modelRef.current.rotation.y + (forward ? -Math.PI * 2 : Math.PI * 2),
+        duration: 1.6,
         onStart: () => {
           let zIndex = forward ? '0' : '10'
           let timeOut = forward ? 700 : 500
@@ -58,14 +62,14 @@ function App() {
           }
         }
       })
-
-      gsap.to(modelRef.current.position, {
-        x: forward ? 25 : 0,
-        y: forward ? -6 : 0,
-        z: forward ? -25 : -80,
-        duration: 1.25,
-        ease: "power1.inOut",
-      })
+      .to(modelRef.current.position, {
+        z: forward ? -40 : -80,
+        duration: 1.6,
+      }, "<")
+      .to(modelRef.current.rotation, {
+        z: forward ? 0.4 : 0,
+        duration: 1.6,
+      }, "<0.2")
     }
   }, [playTransitionSoundIn, playTransitionSoundOut])
 
@@ -89,7 +93,8 @@ function App() {
   const handleToggleMute = useCallback(() => {
     toggleMuteIn()
     toggleMuteOut()
-  }, [toggleMuteIn, toggleMuteOut])
+    toggleMuteCard()
+  }, [toggleMuteIn, toggleMuteOut, toggleMuteCard])
 
   return (
     <>
@@ -134,7 +139,7 @@ function App() {
       {/* Main Section - Con scroll normal después de la transición */}
       <div ref={mainRef} className={showMain ? "relative" : "fixed inset-0"}>
         <ReactLenis root options={{ autoRaf: false }} ref={lenisRef}>
-          <Main />
+          <Main onBackToHero={gotoHero} modelRef={modelRef} showMain={showMain} playCardSound={playCardSound} />
         </ReactLenis>
       </div>
     </>
